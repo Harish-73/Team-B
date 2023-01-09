@@ -1,27 +1,15 @@
 import React from 'react';
-import { db } from '../firebaseContent' 
+import { zz } from '../firebaseContent' 
 import {addDocs, addDoc, collection} from "firebase/firestore";
 
-function Sample() {
+function Sample({heroName}) {
 
-    const saveChange=async()=>{
-          try {
-            await addDoc(collection(db,"registration"), {
-            RollNo:"straing"
-            
-            });
-            alert('updated successfully');
-            
-          }
-          catch {
-            alert('Error Occurred');
-          }
-        // alert('updated successfully');
-      
-    }
+  if(heroName === 'Joker'){
+    throw new Error('Not Found!')
+  } 
     return(
         <div>
-        <button onClick={() => saveChange()}>Save</button>
+          {heroName}
         </div>
     );
 

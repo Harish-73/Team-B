@@ -8,6 +8,7 @@ import "./datatable.css";
 import Tab from "./Table";
 // import firebase from 'firebase/compat/app';
 import { db } from '../firebaseContent';
+import DataServices from "../demo/DataServices";
 import { collection,
   getDocs,
   addDoc,
@@ -15,45 +16,23 @@ import { collection,
   deleteDoc,
   doc, } from "firebase/firestore";
 
-export default function Candidate() {
+const Candidate = ({ getDataId }) => {
 
-  // const [allDocs, setAllDocs] = useState([]);
-  // const db = firebase.firestore;
-
-  // function fetchAll(e){
-  //   e.preventDefault();
-
-  //     db.collection("registration").get().then((snapshot) => { 
-  //       if(snapshot.docs.length>0){
-  //           snapshot.docs.forEach((doc) => {
-  //           setAllDocs((prev) => { 
-  //             return [...prev, doc.data()];
-  //     });
-  //     });
-  //   }
-  //     });
-  //     console.log(allDocs);
-
-  //   }
-
+  
   const [users, setUsers] = useState([]);
   const usersCollectionRef = collection(db, "registration");
-
-  // const deleteUser = async (id) => {
-  //   const userDoc = doc(db, "registration", id);
-  //   await deleteDoc(userDoc);
-  // };
-
   useEffect((event) => {
-    // event.preventDefault();
-    const getUsers = async () => {
-      const data = await getDocs(usersCollectionRef);
-      setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-      console.log(data.id);
-    };
-
     getUsers();
   }, []);
+
+  
+  const getUsers = async () => {
+    const data = await getDocs(usersCollectionRef);
+    setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    // console.log(data);
+  };
+
+
 
 //   const [filterFn, setFilterFn] = useState({ fn: items => { return items; } })
 
@@ -69,15 +48,40 @@ export default function Candidate() {
 //         }
 //     })
 // }
-  
 
-const [query, setQuery] = useState("");
-  const keys = ["FirstName", "StudentID"];
+
+// const deleteHandler = async (id) => {
+//   await DataServices.deletedata(id);
+//   const data = await getDocs(usersCollectionRef);
+//     setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+//   getUsers();
+// };
+
+{/*const [query, setQuery] = useState("");
+  const keys = ["firstName", "studentID"];
   const search = (users) => {
     return users.filter((item) =>
-      keys.some((key) => item[key].toLowerCase().includes(query))
+      keys.some((key) => item[key]?.toLowerCase().includes(query))
     );
-  };
+  };*/}
+
+
+  const [filterFn, setFilterFn] = useState({ fn: items => { return items; } })
+  const handleSearch = e => {
+    let target = e.target;
+    const keys = ["firstName", "studentID"];
+    setFilterFn({
+        fn: items => {
+            if (target.value == "")
+                return items;
+            else
+                return items.filter((item) =>
+                keys.some((key) => 
+                item[key]?.toLowerCase().includes(target.value))
+                );
+        }
+    })
+}
 
 
         return(
@@ -91,8 +95,8 @@ const [query, setQuery] = useState("");
                                     className="me-1"
                                     aria-label="Search"
                                     style={{alignSelf:"center", height:"40px"}}
-                                    // onChange={handleSearch}
-                                    onChange={(e) => setQuery(e.target.value)}
+                                    // onChange={(e) => setQuery(e.target.value)}
+                                    onChange={handleSearch}
                                   
                                 />
                               </Form><br />
@@ -100,9 +104,13 @@ const [query, setQuery] = useState("");
                 <br />
             </div>
             <Card className={"border border-dark bg-white text-dark"}>
-                <Card.Header><FontAwesomeIcon icon = {faList} /> Candidate List</Card.Header>
+                <Card.Header><FontAwesomeIcon icon = {faList} /> Candidate List  
+                {/* <Button className="ms-3" size="sm" variant="outline-secondary" onClick={getUsers}>View</Button> */}
+                </Card.Header>
+
                 <Card.Body>
-                  <Tab data={search(users)}/>
+                  <Tab data={users} getDataId={getDataId} getUsers={getUsers} filterFn={filterFn} />
+                  {/* <TblPagination /> */}
                 {/* <Table striped bordered hover variant="white" users={search(users)}> */}
                       {/* <thead>
                             <tr>
@@ -138,4 +146,5 @@ const [query, setQuery] = useState("");
             </div>
 
         );
-}
+};
+export default Candidate;

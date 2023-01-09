@@ -11,7 +11,7 @@ import {Link} from 'react-router-dom';
 
 export default class Registration extends React.Component{
 
-    constructor(props){
+    constructor(props, id, setDataId){
         super(props);
         this.state = this.initialState;
         // this.state = this.checkFalse;
@@ -66,7 +66,8 @@ export default class Registration extends React.Component{
         event.preventDefault();
             // alert(this.state.DOB +" - "+this.state.IsAutonomous+" - "+ this.state.IsUniversityStatus+" - "+this.state.Departmant);
             // console.log(details)
-            this.setState(this.initialState);
+            this.saveChange();
+            
             
     }
 
@@ -139,6 +140,7 @@ export default class Registration extends React.Component{
             , CurrentYear:details.CurrentYear
         });
         alert('Registered successfully');
+        this.setState(this.initialState);
       } catch {
       alert('Error Occurred');
     }
@@ -406,7 +408,7 @@ export default class Registration extends React.Component{
                     <label> <input style={{width:"15px", height:"15px"}} name="Agree" type="checkbox" onClick={(e) => this.setState({[e.target.name]:!this.state.Agree})} required checked={this.state.Agree ? true : false}
                     />{" "} I Agree</label>    
                     <Card.Footer style={{"textAlign":"right"}}>
-                        <Button size="lg" variant="outline-success" onClick={() => this.saveChange()} type="submit">
+                        <Button size="lg" variant="outline-success" type="submit">
                         Submit
                         </Button>{" "}
                         <Button size="lg" variant="outline-primary" type="reset">
